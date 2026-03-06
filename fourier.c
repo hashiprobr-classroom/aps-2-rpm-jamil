@@ -81,9 +81,52 @@ void fft_inverse(complex t[], complex s[], int n) {
 }
 
 void fft_forward_2d(complex matrix[MAX_SIZE][MAX_SIZE], int width, int height) {
+    complex col_in[MAX_SIZE], col_out[MAX_SIZE];
+    complex lin_in[MAX_SIZE], lin_out[MAX_SIZE];
+
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++)
+            col_in[y] = matrix[y][x];
+
+        fft_forward(col_in, col_out, height);
+
+        for (int y = 0; y < height; y++)
+            matrix[y][x] = col_out[y];
+    }
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++)
+            lin_in[x] = matrix[y][x];
+
+        fft_forward(lin_in, lin_out, width);
+
+        for (int x = 0; x < width; x++)
+            matrix[y][x] = lin_out[x];
+    }
 }
 
 void fft_inverse_2d(complex matrix[MAX_SIZE][MAX_SIZE], int width, int height) {
+    complex col_in[MAX_SIZE], col_out[MAX_SIZE];
+    complex lin_in[MAX_SIZE], lin_out[MAX_SIZE];
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++)
+            lin_in[x] = matrix[y][x];
+
+        fft_inverse(lin_in, lin_out, width);
+
+        for (int x = 0; x < width; x++)
+            matrix[y][x] = lin_out[x];
+    }
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++)
+            col_in[y] = matrix[y][x];
+
+        fft_inverse(col_in, col_out, height);
+
+        for (int y = 0; y < height; y++)
+            matrix[y][x] = col_out[y];
+    }
 }
 
 void filter(complex input[MAX_SIZE][MAX_SIZE], complex output[MAX_SIZE][MAX_SIZE], int width, int height, int flip) {
